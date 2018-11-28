@@ -20,7 +20,7 @@ int main(){
 
 void start(){
   string userReply;
-  cout << "Do you want to register(0) or login(1)?" << endl;
+  cout << "(0): Register\n(1): Login" << endl;
   cin >> userReply;
   cout << userReply<< endl;
   int userInt = atoi(userReply.c_str());
