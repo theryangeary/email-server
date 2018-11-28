@@ -7,7 +7,6 @@ int main(){
   return 0;
 }
 
-
 void start(){
   int userInt = showMenu("(0): Register\n(1): Login", 1);
   if(userInt == 0){
