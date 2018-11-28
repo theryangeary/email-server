@@ -30,7 +30,7 @@ int showMenu(string options, int max) {
     string userReply;
     cin >> userReply;
     int userInt = atoi(userReply.c_str());
-    if (userInt > max) {
+    if (userInt > max || userInt < 0) {
       cout << "Please enter a valid number" << endl;
       userInt = -1;
     }
