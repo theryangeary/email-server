@@ -8,19 +8,53 @@ int main(){
 }
 
 void start(){
+  string username;
+
   int userInt = showMenu("(0): Register\n(1): Login", 1);
   if(userInt == 0){
-    reg();
+    username = reg();
   }
   else if(userInt == 1){
-    login();
+    username = login();
   }
 }
 
-void login() {
+string login() {
+  string username;
+  string password;
+
+  cout << "Username: " << endl;
+  cin >> username;
+
+  cout << "Password: " << endl;
+  cin >> password;
+
+  // TODO Check that user exists and password is correct
+  // If not, return an empty string
+  return username;
 }
 
-void reg() {
+string reg() {
+  string username;
+  string password;
+  string passwordConfirm;
+
+  cout << "Username: " << endl;
+  cin >> username;
+
+  cout << "Password: " << endl;
+  cin >> password;
+
+  cout << "Confirm password: " << endl;
+  cin >> passwordConfirm;
+
+  if (password == passwordConfirm) {
+    // TODO store in db
+    return username;
+  }
+  else {
+    return "";
+  }
 }
 
 int showMenu(string options, int max) {
