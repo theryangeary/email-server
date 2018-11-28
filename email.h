@@ -9,6 +9,14 @@
 #define MAIN_MENU "(0): Read mail\n(1): Send mail\n(2): Logout"
 #define MAIN_MENU_OPT_NUM 2
 
+#define INVALID_INPUT "Please enter a valid number"
+
+#define PASSWORD_PROMPT "Password: "
+#define USERNAME_PROMPT "Username: "
+#define CONFIRM_PASSWORD_PROMPT "Confirm password: "
+#define PASSWORD_MISMATCH "Passwords don't match"
+
+#define EMPTY_STRING ""
 using namespace std;
 
 string reg();

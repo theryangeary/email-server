@@ -11,9 +11,9 @@ int main(){
 }
 
 void start(){
-  string username = "";
+  string username = EMPTY_STRING;
 
-  while ("" == username) {
+  while (EMPTY_STRING == username) {
     int userInt = showMenu(START_MENU, START_MENU_OPT_NUM);
     switch(userInt) {
       case 0:
@@ -56,10 +56,10 @@ string login() {
   string username;
   string password;
 
-  cout << "Username: ";
+  cout << USERNAME_PROMPT;
   cin >> username;
 
-  cout << "Password: ";
+  cout << PASSWORD_PROMPT;
   cin >> password;
 
   // TODO Check that user exists and password is correct
@@ -72,13 +72,13 @@ string reg() {
   string password;
   string passwordConfirm;
 
-  cout << "Username: " << endl;
+  cout << USERNAME_PROMPT << endl;
   cin >> username;
 
-  cout << "Password: " << endl;
+  cout << PASSWORD_PROMPT << endl;
   cin >> password;
 
-  cout << "Confirm password: " << endl;
+  cout << CONFIRM_PASSWORD_PROMPT << endl;
   cin >> passwordConfirm;
 
   if (password == passwordConfirm) {
@@ -86,8 +86,8 @@ string reg() {
     return username;
   }
   else {
-    cout << "Passwords don't match" << endl;
-    return "";
+    cout << PASSWORD_MISMATCH << endl;
+    return EMPTY_STRING;
   }
 }
 
@@ -99,7 +99,7 @@ int showMenu(string options, int max) {
     cin >> userReply;
     int userInt = atoi(userReply.c_str());
     if (userReply != to_string(userInt) || userInt > max || userInt < 0) {
-      cout << "Please enter a valid number" << endl;
+      cout << INVALID_INPUT << endl;
       userInt = -1;
     }
     else {
