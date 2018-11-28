@@ -3,7 +3,9 @@
 using namespace std;
 
 int main(){
-  start();
+  while(1) {
+    start();
+  }
   return 0;
 }
 
