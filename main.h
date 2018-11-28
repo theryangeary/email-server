@@ -6,8 +6,8 @@
 
 using namespace std;
 
-void reg();
-void login();
+string reg();
+string login();
 void read();
 void send();
 void start();
