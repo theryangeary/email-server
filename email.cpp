@@ -8,14 +8,16 @@ int main(){
 }
 
 void start(){
-  string username;
+  string username = "";
 
-  int userInt = showMenu("(0): Register\n(1): Login", 1);
-  if(userInt == 0){
-    username = reg();
-  }
-  else if(userInt == 1){
-    username = login();
+  while ("" == username) {
+    int userInt = showMenu("(0): Register\n(1): Login", 1);
+    if(userInt == 0){
+      username = reg();
+    }
+    else if(userInt == 1){
+      username = login();
+    }
   }
 }
 
@@ -53,6 +55,7 @@ string reg() {
     return username;
   }
   else {
+    cout << "Passwords don't match" << endl;
     return "";
   }
 }
