@@ -13,29 +13,41 @@ void start(){
   string username = "";
 
   while ("" == username) {
-    int userInt = showMenu(START_MENU, 1);
-    if(userInt == 0){
-      username = reg();
-    }
-    else if(userInt == 1){
-      username = login();
+    int userInt = showMenu(START_MENU, START_MENU_OPT_NUM);
+    switch(userInt) {
+      case 0:
+        username = reg();
+        break;
+      case 1:
+        username = login();
+        break;
     }
   }
 
-  menu();
+  menu(username);
 }
 
-void menu(){
+void menu(string sessionUser){
+  cout << "Welcome " << sessionUser << endl;
+  int userInt = showMenu(MAIN_MENU, MAIN_MENU_OPT_NUM);
+  switch (userInt) {
+    case 0:
+      break;
+    case 1:
+      break;
+    case 2:
+      break;
+  }
 }
 
 string login() {
   string username;
   string password;
 
-  cout << "Username: " << endl;
+  cout << "Username: ";
   cin >> username;
 
-  cout << "Password: " << endl;
+  cout << "Password: ";
   cin >> password;
 
   // TODO Check that user exists and password is correct
