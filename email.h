@@ -13,8 +13,8 @@ using namespace std;
 
 string reg();
 string login();
-void read();
-void send();
+void read(string sessionUser);
+void send(string sessionUser);
 void start();
 void menu(string sessionUser);
 void showUsers();

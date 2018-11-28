@@ -1,3 +1,4 @@
+// Ryan Geary and Anna Schaal
 #include "email.h"
 
 using namespace std;
@@ -29,15 +30,26 @@ void start(){
 
 void menu(string sessionUser){
   cout << "Welcome " << sessionUser << endl;
-  int userInt = showMenu(MAIN_MENU, MAIN_MENU_OPT_NUM);
-  switch (userInt) {
-    case 0:
-      break;
-    case 1:
-      break;
-    case 2:
-      break;
+
+  while(1) {
+    int userInt = showMenu(MAIN_MENU, MAIN_MENU_OPT_NUM);
+    switch (userInt) {
+      case 0:
+        read(sessionUser);
+        break;
+      case 1:
+        send(sessionUser);
+        break;
+      case 2:
+        return;
+        break;
+    }
   }
+}
+
+void read(string sessionUser) {
+}
+void send(string sessionUser) {
 }
 
 string login() {
@@ -86,7 +98,7 @@ int showMenu(string options, int max) {
     string userReply;
     cin >> userReply;
     int userInt = atoi(userReply.c_str());
-    if (userInt > max || userInt < 0) {
+    if (userReply != to_string(userInt) || userInt > max || userInt < 0) {
       cout << "Please enter a valid number" << endl;
       userInt = -1;
     }
