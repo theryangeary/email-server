@@ -19,6 +19,11 @@ void start(){
       username = login();
     }
   }
+
+  menu();
+}
+
+void menu(){
 }
 
 string login() {
