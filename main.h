@@ -4,6 +4,9 @@
 #include <string.h>
 #include <iostream>
 
+#define START_MENU "(0): Register\n(1): Login"
+#define MAIN_MENU "(0): Read mail\n(1): Send mail\n(2): Logout"
+
 using namespace std;
 
 string reg();

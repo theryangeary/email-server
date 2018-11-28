@@ -11,7 +11,7 @@ void start(){
   string username = "";
 
   while ("" == username) {
-    int userInt = showMenu("(0): Register\n(1): Login", 1);
+    int userInt = showMenu(START_MENU, 1);
     if(userInt == 0){
       username = reg();
     }
