@@ -1,11 +1,11 @@
 CC = g++
-CFLAGS = -g
+CFLAGS = -g -lsqlite3
 SRC = email.cpp
 OBJS = $(SRC:.cpp=.o)
 all: email
 
 email: $(OBJS)
-	$(CC) -o $@ $^
+	$(CC) -o $@ $^ $(CFLAGS)
 
 #test: $(OBJS) test.o
 #	$(CC) -o $@ $^
