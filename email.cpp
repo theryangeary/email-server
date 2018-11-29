@@ -3,10 +3,44 @@
 
 using namespace std;
 
+sqlite3* db;
+
+static int authorizationCallback(void *data, int argc, char** argv, char** azColName) {
+  if (argc != 3) {
+    return 1;
+  }
+  else {
+    printf(WELCOME_MESSAGE, argv[1] ? argv[1] : NULL_STRING);
+  }
+}
+
+static int sendCallback(void *data, int argc, char** argv, char** azColName) {
+  printf(MESSAGE_SENT);
+}
+
+static int receiveCallback(void *data, int argc, char** argv, char** azColName) {
+  printf("%s, %s", "SENDER", "THIS IS THE MESSAGE");
+}
+
 int main(){
+  int result;
+  char* zErrMsg = 0;
+
+  result = sqlite3_open(DB_NAME, &db);
+
+  if( result ){
+    fprintf(stderr, DB_OPEN_ERROR, sqlite3_errmsg(db));
+    sqlite3_close(db);
+    return 1;
+  };
+
+  char* sql = CREATE_TABLE_USERS;
+  result = sqlite3_exec(db, sql, authorizationCallback, 0, &zErrMsg);
+
   while(1) {
     start();
   }
+
   return 0;
 }
 
@@ -29,8 +63,6 @@ void start(){
 }
 
 void menu(string sessionUser){
-  cout << "Welcome " << sessionUser << endl;
-
   while(1) {
     int userInt = showMenu(MAIN_MENU, MAIN_MENU_OPT_NUM);
     switch (userInt) {
