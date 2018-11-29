@@ -6,11 +6,12 @@ using namespace std;
 sqlite3* db;
 
 static int authorizationCallback(void *data, int argc, char** argv, char** azColName) {
-  if (argc != 3) {
+  if (argc != 1) {
     return 1;
   }
   else {
-    printf(WELCOME_MESSAGE, argv[1] ? argv[1] : NULL_STRING);
+    printf(WELCOME_MESSAGE, argv[0] ? argv[0] : NULL_STRING);
+    return 0;
   }
 }
 
@@ -100,6 +101,9 @@ string login() {
 }
 
 string reg() {
+  int result;
+  char* zErrMsg = 0;
+
   string username;
   string password;
   string passwordConfirm;
@@ -114,7 +118,12 @@ string reg() {
   cin >> passwordConfirm;
 
   if (password == passwordConfirm) {
-    // TODO store in db
+    int length = strlen(INSERT_USER) + 2*strlen(username.c_str()) + 2*strlen(password.c_str()) + 1;
+    char* sql = (char*) malloc(length);
+    string usernameCopy = username;
+    string passwordCopy = password;
+    snprintf(sql, length, INSERT_USER, username.c_str(), password.c_str());
+    result = sqlite3_exec(db, sql, authorizationCallback, 0, &zErrMsg);
     return username;
   }
   else {
