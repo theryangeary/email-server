@@ -27,6 +27,7 @@
 #define DB_OPEN_ERROR "Can't open database: %s\n"
 #define CREATE_TABLE_USERS ((char*) "create table if not exists USERS(id integer primary key autoincrement, NAME text, PASSWORD varchar(128));")
 #define INSERT_USER "insert into users values (NULL, '%1$s', '%2$s'); select name from users where name='%1$s' and password='%2$s';"
+#define CHECK_USER "select name from users where name='%1$s' and password='%2$s';"
 
 #define EMPTY_STRING ""
 using namespace std;

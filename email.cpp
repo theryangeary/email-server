@@ -4,8 +4,10 @@
 using namespace std;
 
 sqlite3* db;
+int callbackFlag = 0;
 
 static int authorizationCallback(void *data, int argc, char** argv, char** azColName) {
+  callbackFlag = 1;
   if (argc != 1) {
     return 1;
   }
@@ -86,6 +88,9 @@ void send(string sessionUser) {
 }
 
 string login() {
+  int result = 1;
+  char* zErrMsg = 0;
+
   string username;
   string password;
 
@@ -97,7 +102,18 @@ string login() {
 
   // TODO Check that user exists and password is correct
   // If not, return an empty string
-  return username;
+
+  int length = strlen(CHECK_USER) + 2*strlen(username.c_str()) + 2*strlen(password.c_str()) + 1;
+  char* sql = (char*) malloc(length);
+  snprintf(sql, length, CHECK_USER, username.c_str(), password.c_str());
+  callbackFlag = 0;
+  result = sqlite3_exec(db, sql, authorizationCallback, 0, &zErrMsg);
+  if (callbackFlag) {
+    return username;
+  }
+  else {
+    return "";
+  }
 }
 
 string reg() {
@@ -120,8 +136,6 @@ string reg() {
   if (password == passwordConfirm) {
     int length = strlen(INSERT_USER) + 2*strlen(username.c_str()) + 2*strlen(password.c_str()) + 1;
     char* sql = (char*) malloc(length);
-    string usernameCopy = username;
-    string passwordCopy = password;
     snprintf(sql, length, INSERT_USER, username.c_str(), password.c_str());
     result = sqlite3_exec(db, sql, authorizationCallback, 0, &zErrMsg);
     return username;
