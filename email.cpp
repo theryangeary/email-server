@@ -24,12 +24,8 @@ static int authorizationCallback(void *data, int argc, char** argv, char** azCol
 
 static int showUsersCallback(void *data, int argc, char** argv, char** azColName) {
   usersListMenuLength++;
-  usersListMenu = usersListMenu + MENU_WRAP_BEGIN + argv[0] + MENU_WRAP_END + SEPARATOR + argv[1] + "\n";
-  return 0;
-}
-
-static int sendCallback(void *data, int argc, char** argv, char** azColName) {
-  printf(MESSAGE_SENT);
+  usersListMenu = usersListMenu + "\n" + MENU_WRAP_BEGIN + argv[0] +
+    MENU_WRAP_END + SEPARATOR + argv[1];
   return 0;
 }
 
@@ -98,17 +94,23 @@ void menu(){
 }
 
 void read() {
+
 }
+
 void send() {
   int result;
   char* zErrMsg = 0;
 
-  usersListMenu = "";
+  usersListMenu = CHOOSE_USER_PROMPT;
   usersListMenuLength = 0;
 
   result = sqlite3_exec(db, GET_ALL_USERS, showUsersCallback, 0, &zErrMsg);
 
   int choice = showMenu(usersListMenu, usersListMenuLength);
+
+  cout << SUBJECT_PROMPT << endl;
+  string subject;
+  cin >> subject;
 
   cout << MESSAGE_PROMPT << endl;
   string message;
@@ -117,9 +119,16 @@ void send() {
   int length = strlen(INSERT_MESSAGE) + to_string(user.id).length() +
     to_string(choice).length() + message.length() + 1;
   char* messageInsert = (char*) malloc(length);
-  snprintf(messageInsert, length, INSERT_MESSAGE, user.id, choice, message.c_str());
+  snprintf(messageInsert, length, INSERT_MESSAGE, user.id, choice,
+      subject.c_str(), message.c_str());
   zErrMsg = 0;
-  result = sqlite3_exec(db, messageInsert, sendCallback, 0, &zErrMsg);
+  result = sqlite3_exec(db, messageInsert, NULL, 0, &zErrMsg);
+  if (!result) {
+    cout << MESSAGE_SENT;
+  }
+  else {
+    cout << SOMETHING_WENT_WRONG << endl;
+  }
 }
 
 string login() {
