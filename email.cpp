@@ -5,24 +5,37 @@ using namespace std;
 
 sqlite3* db;
 int callbackFlag = 0;
+string usersListMenu  = "";
+int usersListMenuLength = 0;
+sessionUser user;
 
 static int authorizationCallback(void *data, int argc, char** argv, char** azColName) {
   callbackFlag = 1;
-  if (argc != 1) {
+  if (argc != 2) {
     return 1;
   }
   else {
-    printf(WELCOME_MESSAGE, argv[0] ? argv[0] : NULL_STRING);
+    printf(WELCOME_MESSAGE, argv[1] ? argv[1] : NULL_STRING);
+    user.id = atoi(argv[0]);
+    user.name = argv[1];
     return 0;
   }
 }
 
+static int showUsersCallback(void *data, int argc, char** argv, char** azColName) {
+  usersListMenuLength++;
+  usersListMenu = usersListMenu + MENU_WRAP_BEGIN + argv[0] + MENU_WRAP_END + SEPARATOR + argv[1] + "\n";
+  return 0;
+}
+
 static int sendCallback(void *data, int argc, char** argv, char** azColName) {
   printf(MESSAGE_SENT);
+  return 0;
 }
 
 static int receiveCallback(void *data, int argc, char** argv, char** azColName) {
   printf("%s, %s", "SENDER", "THIS IS THE MESSAGE");
+  return 0;
 }
 
 int main(){
@@ -37,8 +50,10 @@ int main(){
     return 1;
   };
 
-  char* sql = CREATE_TABLE_USERS;
-  result = sqlite3_exec(db, sql, authorizationCallback, 0, &zErrMsg);
+  char* create_table_users = CREATE_TABLE_USERS;
+  result = sqlite3_exec(db, create_table_users, authorizationCallback, 0, &zErrMsg);
+  char* create_table_messages = CREATE_TABLE_MESSAGES;
+  result = sqlite3_exec(db, create_table_messages, authorizationCallback, 0, &zErrMsg);
 
   while(1) {
     start();
@@ -62,18 +77,18 @@ void start(){
     }
   }
 
-  menu(username);
+  menu();
 }
 
-void menu(string sessionUser){
+void menu(){
   while(1) {
     int userInt = showMenu(MAIN_MENU, MAIN_MENU_OPT_NUM);
     switch (userInt) {
       case 0:
-        read(sessionUser);
+        read();
         break;
       case 1:
-        send(sessionUser);
+        send();
         break;
       case 2:
         return;
@@ -82,9 +97,29 @@ void menu(string sessionUser){
   }
 }
 
-void read(string sessionUser) {
+void read() {
 }
-void send(string sessionUser) {
+void send() {
+  int result;
+  char* zErrMsg = 0;
+
+  usersListMenu = "";
+  usersListMenuLength = 0;
+
+  result = sqlite3_exec(db, GET_ALL_USERS, showUsersCallback, 0, &zErrMsg);
+
+  int choice = showMenu(usersListMenu, usersListMenuLength);
+
+  cout << MESSAGE_PROMPT << endl;
+  string message;
+  cin >> message;
+
+  int length = strlen(INSERT_MESSAGE) + to_string(user.id).length() +
+    to_string(choice).length() + message.length() + 1;
+  char* messageInsert = (char*) malloc(length);
+  snprintf(messageInsert, length, INSERT_MESSAGE, user.id, choice, message.c_str());
+  zErrMsg = 0;
+  result = sqlite3_exec(db, messageInsert, sendCallback, 0, &zErrMsg);
 }
 
 string login() {

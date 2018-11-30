@@ -13,6 +13,7 @@
 
 #define WELCOME_MESSAGE "Welcome %s!\n"
 #define NULL_STRING "NULL"
+#define MESSAGE_PROMPT "Enter message: \n"
 #define MESSAGE_SENT "Message sent\n"
 #define MESSAGE_RECEIVED "Message from %s:\n\n%s\n"
 
@@ -22,22 +23,33 @@
 #define USERNAME_PROMPT "Username: "
 #define CONFIRM_PASSWORD_PROMPT "Confirm password: "
 #define PASSWORD_MISMATCH "Passwords don't match"
+#define SEPARATOR ": "
 
 #define DB_NAME "email.db"
 #define DB_OPEN_ERROR "Can't open database: %s\n"
 #define CREATE_TABLE_USERS ((char*) "create table if not exists USERS(id integer primary key autoincrement, NAME text, PASSWORD varchar(128));")
-#define INSERT_USER "insert into users values (NULL, '%1$s', '%2$s'); select name from users where name='%1$s' and password='%2$s';"
-#define CHECK_USER "select name from users where name='%1$s' and password='%2$s';"
+#define CREATE_TABLE_MESSAGES ((char*) "create table if not exists MESSAGES(id integer primary key autoincrement, SENDER integer, RECEIVER integer, MESSAGE text);")
+#define INSERT_USER "insert into users values (NULL, '%1$s', '%2$s'); select id, name from users where name='%1$s' and password='%2$s';"
+#define INSERT_MESSAGE "insert into messages values (NULL, '%1$d', '%2$d', '%3$s');"
+#define CHECK_USER "select id, name from users where name='%1$s' and password='%2$s';"
+#define GET_ALL_USERS "select id, name from users;"
+
+#define MENU_WRAP_BEGIN "("
+#define MENU_WRAP_END ")"
 
 #define EMPTY_STRING ""
 using namespace std;
 
 string reg();
 string login();
-void read(string sessionUser);
-void send(string sessionUser);
+void read();
+void send();
 void start();
-void menu(string sessionUser);
+void menu();
 void showUsers();
 int showMenu(string options, int max);
 
+typedef struct sessionUser {
+  int id;
+  string name;
+} sessionUser;
