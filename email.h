@@ -6,8 +6,8 @@
 #include <sqlite3.h>
 #include <stdio.h>
 
-#define START_MENU "(0): Register\n(1): Login"
-#define START_MENU_OPT_NUM 1
+#define START_MENU "(0): Register\n(1): Login\n(2): Quit"
+#define START_MENU_OPT_NUM 2
 #define MAIN_MENU "(0): Read mail\n(1): Send mail\n(2): Logout"
 #define MAIN_MENU_OPT_NUM 2
 
@@ -47,7 +47,7 @@ string reg();
 string login();
 void read();
 void send();
-void start();
+int start();
 void menu();
 void showUsers();
 int showMenu(string options, int max);

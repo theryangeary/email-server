@@ -51,14 +51,15 @@ int main(){
   char* create_table_messages = CREATE_TABLE_MESSAGES;
   result = sqlite3_exec(db, create_table_messages, authorizationCallback, 0, &zErrMsg);
 
-  while(1) {
-    start();
+  int next = 1;
+  while(next) {
+    next = start();
   }
 
   return 0;
 }
 
-void start(){
+int start(){
   string username = EMPTY_STRING;
 
   while (EMPTY_STRING == username) {
@@ -70,10 +71,13 @@ void start(){
       case 1:
         username = login();
         break;
+      case 2:
+        return 0;
     }
   }
 
   menu();
+  return 1;
 }
 
 void menu(){
