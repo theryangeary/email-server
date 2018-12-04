@@ -5,8 +5,8 @@ using namespace std;
 
 sqlite3* db;
 int callbackFlag = 0;
-string usersListMenu  = "";
-int usersListMenuLength = 0;
+string listMenu  = "";
+int listMenuLength = 0;
 sessionUser user;
 
 static int authorizationCallback(void *data, int argc, char** argv, char** azColName) {
@@ -22,15 +22,10 @@ static int authorizationCallback(void *data, int argc, char** argv, char** azCol
   }
 }
 
-static int showUsersCallback(void *data, int argc, char** argv, char** azColName) {
-  usersListMenuLength++;
-  usersListMenu = usersListMenu + "\n" + MENU_WRAP_BEGIN + argv[0] +
+static int makeMenuCallback(void *data, int argc, char** argv, char** azColName) {
+  listMenuLength++;
+  listMenu = listMenu + "\n" + MENU_WRAP_BEGIN + argv[0] +
     MENU_WRAP_END + SEPARATOR + argv[1];
-  return 0;
-}
-
-static int receiveCallback(void *data, int argc, char** argv, char** azColName) {
-  printf("%s, %s", "SENDER", "THIS IS THE MESSAGE");
   return 0;
 }
 
@@ -98,19 +93,25 @@ void menu(){
 }
 
 void read() {
-
+  int result;
+  char* zErrMsg = 0;
+  listMenu = CHOOSE_MAIL_PROMPT;  
+  listMenuLength = 0;
+  
+  result = sqlite3_exec(db, GET_MAIL_USER_ID, makeMenuCallback, 0, &zErrMsg);
+ 
 }
 
 void send() {
   int result;
   char* zErrMsg = 0;
 
-  usersListMenu = CHOOSE_USER_PROMPT;
-  usersListMenuLength = 0;
+  listMenu = CHOOSE_USER_PROMPT;
+  listMenuLength = 0;
 
-  result = sqlite3_exec(db, GET_ALL_USERS, showUsersCallback, 0, &zErrMsg);
+  result = sqlite3_exec(db, GET_ALL_USERS, makeMenuCallback, 0, &zErrMsg);
 
-  int choice = showMenu(usersListMenu, usersListMenuLength);
+  int choice = showMenu(listMenu, listMenuLength);
 
   cout << SUBJECT_PROMPT << endl;
   string subject;

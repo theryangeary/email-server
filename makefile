@@ -1,16 +1,13 @@
 CC = g++
-CFLAGS = -g -lsqlite3
+CFLAGS = -g -std=c++11 
+LFLAGS = -lsqlite3
+OFLAGS = 
 SRC = email.cpp
 OBJS = $(SRC:.cpp=.o)
 all: email
 
-email: $(OBJS)
-	$(CC) -o $@ $^ $(CFLAGS)
-
-#test: $(OBJS) test.o
-#	$(CC) -o $@ $^
-#	./test
-#	echo "YOUR TESTS PASSED :)"
+email: $(SRC)
+	$(CC) -o $@ $^ $(CFLAGS) $(LFLAGS)
 
 clean:
 	rm email *.o

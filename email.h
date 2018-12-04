@@ -19,6 +19,7 @@
 #define MESSAGE_SENT "Message sent\n"
 #define MESSAGE_RECEIVED "Message from %s:\n\n%s\n"
 #define CHOOSE_USER_PROMPT "Enter user ID to send mail to:"
+#define CHOOSE_MAIL_PROMPT "Enter Mail ID: " 
 
 #define INVALID_INPUT "Please enter a valid number"
 
@@ -36,6 +37,7 @@
 #define INSERT_MESSAGE "insert into messages values (NULL, '%1$d', '%2$d', '%3$s', '%4$s');"
 #define CHECK_USER "select id, name from users where name='%1$s' and password='%2$s';"
 #define GET_ALL_USERS "select id, name from users;"
+#define GET_MAIL_USER_ID "select id, subject from messages where receiver='%1$s';"
 
 #define MENU_WRAP_BEGIN "("
 #define MENU_WRAP_END ")"
