@@ -1,4 +1,4 @@
-// Ryan Geary and Anna Schaal
+//Ryan Geary and Anna Schaal
 #include "email.h"
 
 using namespace std;
@@ -29,6 +29,17 @@ static int makeMenuCallback(void *data, int argc, char** argv,
   listMenu = listMenu + "\n" + MENU_WRAP_BEGIN + argv[0] +
     MENU_WRAP_END + SEPARATOR + argv[1];
   return 0;
+}
+
+static int printMailCallback(void *data, int argc, char** argv,
+    char** azColName) {
+  if(argc != 2){
+    return 1;
+  }
+  else{
+    printf(MAIL_FORMAT, argv[0], argv[1]);
+    return 0;
+  }
 }
 
 int main(){
@@ -103,7 +114,14 @@ void read() {
   listMenuLength = 0;
 
   result = sqlite3_exec(db, GET_MAIL_USER_ID, makeMenuCallback, 0, &zErrMsg);
-
+  int choice = showMenu(listMenu, listMenuLength); 
+  cout << "Result: " << result << endl;
+  cout << CHOOSE_MAIL_PROMPT << endl;
+  
+  int length = strlen(GET_MAIL) + to_string(choice).length() + 1;
+  char* getMail = (char*) malloc(length);
+  result = sqlite3_exec(db, getMail, printMailCallback, 0, &zErrMsg);
+  cout << "Get mail result: " << result << endl;
 }
 
 void send() {

@@ -13,6 +13,7 @@
 
 #define SOMETHING_WENT_WRONG "Something went wrong"
 #define WELCOME_MESSAGE "Welcome %s!\n"
+#define MAIL_FORMAT "Subject: %s\n\n%s\n"
 #define NULL_STRING "NULL"
 #define SUBJECT_PROMPT "Enter subject: "
 #define MESSAGE_PROMPT "Enter message: "
@@ -38,6 +39,7 @@
 #define CHECK_USER "select id, name from users where name='%1$s' and password='%2$s';"
 #define GET_ALL_USERS "select id, name from users;"
 #define GET_MAIL_USER_ID "select id, subject from messages where receiver='%1$s';"
+#define GET_MAIL "select subject, message from messages where id='%1$s';"
 
 #define MENU_WRAP_BEGIN "("
 #define MENU_WRAP_END ")"
