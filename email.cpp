@@ -110,18 +110,30 @@ void menu(){
 void read() {
   int result;
   char* zErrMsg = 0;
-  listMenu = CHOOSE_MAIL_PROMPT;
-  listMenuLength = 0;
 
-  result = sqlite3_exec(db, GET_MAIL_USER_ID, makeMenuCallback, 0, &zErrMsg);
-  int choice = showMenu(listMenu, listMenuLength); 
-  cout << "Result: " << result << endl;
+  listMenu = CHOOSE_MAIL_PROMPT;
+  listMenuLength = 1;
+
+  int length = strlen(INSERT_USER) + to_string(user.id).length() + 1;
+  char* getMailList = (char*) malloc(length);
+  snprintf(getMailList, length, GET_MAIL_USER_ID, to_string(user.id).c_str());
+  result = sqlite3_exec(db, getMailList, makeMenuCallback, 0, &zErrMsg);
+  free(getMailList);
+
+  int choice = showMenu(listMenu, listMenuLength);
+
   cout << CHOOSE_MAIL_PROMPT << endl;
-  
-  int length = strlen(GET_MAIL) + to_string(choice).length() + 1;
+
+  if (!choice) {
+    return;
+  }
+
+  length = strlen(GET_MAIL) + to_string(choice).length() + 1;
   char* getMail = (char*) malloc(length);
+  snprintf(getMail, length, GET_MAIL, to_string(choice).c_str());
+  cout << getMail << endl;
   result = sqlite3_exec(db, getMail, printMailCallback, 0, &zErrMsg);
-  cout << "Get mail result: " << result << endl;
+  free(getMail);
 }
 
 void send() {
@@ -150,6 +162,8 @@ void send() {
       subject.c_str(), message.c_str());
   zErrMsg = 0;
   result = sqlite3_exec(db, messageInsert, NULL, 0, &zErrMsg);
+  free(messageInsert);
+
   if (!result) {
     cout << MESSAGE_SENT;
   }

@@ -13,14 +13,14 @@
 
 #define SOMETHING_WENT_WRONG "Something went wrong"
 #define WELCOME_MESSAGE "Welcome %s!\n"
-#define MAIL_FORMAT "Subject: %s\n\n%s\n"
+#define MAIL_FORMAT "Subject: %s\n%s\n"
 #define NULL_STRING "NULL"
 #define SUBJECT_PROMPT "Enter subject: "
 #define MESSAGE_PROMPT "Enter message: "
 #define MESSAGE_SENT "Message sent\n"
 #define MESSAGE_RECEIVED "Message from %s:\n\n%s\n"
 #define CHOOSE_USER_PROMPT "Enter user ID to send mail to:"
-#define CHOOSE_MAIL_PROMPT "Enter Mail ID: " 
+#define CHOOSE_MAIL_PROMPT "Enter Mail ID:"
 
 #define INVALID_INPUT "Please enter a valid number"
 
