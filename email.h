@@ -39,7 +39,7 @@
 #define CHECK_USER "select id, name from users where name='%1$s' and password='%2$s';"
 #define GET_ALL_USERS "select id, name from users;"
 #define GET_MAIL_USER_ID "select id, subject from messages where receiver='%1$s';"
-#define GET_MAIL "select subject, message from messages where id='%1$s';"
+#define GET_MAIL "select subject, message from messages where id='%1$s' and receiver='%2$s';"
 
 #define MENU_WRAP_BEGIN "("
 #define MENU_WRAP_END ")"

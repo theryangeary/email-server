@@ -130,8 +130,8 @@ void read() {
 
   length = strlen(GET_MAIL) + to_string(choice).length() + 1;
   char* getMail = (char*) malloc(length);
-  snprintf(getMail, length, GET_MAIL, to_string(choice).c_str());
-  cout << getMail << endl;
+  snprintf(getMail, length, GET_MAIL, to_string(choice).c_str(),
+      to_string(user.id).c_str());
   result = sqlite3_exec(db, getMail, printMailCallback, 0, &zErrMsg);
   free(getMail);
 }
