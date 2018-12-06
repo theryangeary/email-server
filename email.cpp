@@ -10,16 +10,15 @@ int listMenuLength = 0;
 int maxMailID = 0;
 sessionUser user;
 
-static int authorizationCallback(void *data, int argc, char** argv,
-    char** azColName) {
+static int authorizationCallback(id, username) {
   callbackFlag = 1;
   if (argc != 2) {
     return 1;
   }
   else {
-    printf(WELCOME_MESSAGE, argv[1] ? argv[1] : NULL_STRING);
-    user.id = atoi(argv[0]);
-    user.name = argv[1];
+    printf(WELCOME_MESSAGE, username ? username : NULL_STRING);
+    user.id = atoi(id);
+    user.name = username;
     return 0;
   }
 }
@@ -195,12 +194,7 @@ string login() {
   // TODO Check that user exists and password is correct
   // If not, return an empty string
 
-  int length = strlen(CHECK_USER) + 2*strlen(username.c_str()) +
-    2*strlen(password.c_str()) + 1;
-  char* sql = (char*) malloc(length);
-  //snprintf(sql, length, CHECK_USER, username.c_str(), password.c_str());
   callbackFlag = 0;
-  //result = sqlite3_exec(db, sql, authorizationCallback, 0, &zErrMsg);
   sqlite3_stmt *stmt;
   const char* pzTest;
   result = sqlite3_prepare(db, CHECK_USER, strlen(CHECK_USER), &stmt, &pzTest);
@@ -212,9 +206,11 @@ string login() {
     while (!done) {
       switch(sqlite3_step(stmt)){
         case SQLITE_ROW:
-          callbackFlag = 1;
+          id = string(reinterpret_cast<const char*>(
+                sqlite3_column_text(stmt, 0)));
           username = string(reinterpret_cast<const char*>(
                 sqlite3_column_text(stmt, 1)));
+          result = authorizationCallback(id, username);
           break;
         case SQLITE_DONE:
           done = true;
