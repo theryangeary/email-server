@@ -7,6 +7,7 @@ sqlite3* db;
 int callbackFlag = 0;
 string listMenu  = "";
 int listMenuLength = 0;
+int maxMailID = 0;
 sessionUser user;
 
 static int authorizationCallback(void *data, int argc, char** argv,
@@ -31,6 +32,7 @@ static int usernameUniqueCallback(void *data, int argc, char** argv,
 static int makeMenuCallback(void *data, int argc, char** argv,
     char** azColName) {
   listMenuLength++;
+  maxMailID = max(maxMailID, atoi(argv[0]));
   listMenu = listMenu + "\n" + MENU_WRAP_BEGIN + argv[0] +
     MENU_WRAP_END + SEPARATOR + argv[1];
   return 0;
@@ -125,9 +127,7 @@ void read() {
   result = sqlite3_exec(db, getMailList, makeMenuCallback, 0, &zErrMsg);
   free(getMailList);
 
-  int choice = showMenu(listMenu, listMenuLength);
-
-  cout << CHOOSE_MAIL_PROMPT << endl;
+  int choice = showMenu(listMenu, maxMailID);
 
   if (!choice) {
     return;
