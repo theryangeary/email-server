@@ -23,6 +23,11 @@ static int authorizationCallback(void *data, int argc, char** argv,
   }
 }
 
+static int usernameUniqueCallback(void *data, int argc, char** argv,
+    char** azColName) {
+  return 1;
+}
+
 static int makeMenuCallback(void *data, int argc, char** argv,
     char** azColName) {
   listMenuLength++;
@@ -213,6 +218,19 @@ string reg() {
 
   cout << USERNAME_PROMPT << endl;
   cin >> username;
+
+  result = 0;
+  int length = strlen(CHECK_USERNAME_UNIQUE) + username.length() + 1;
+  char* checkUsernameUnique = (char*) malloc(length*sizeof(char));
+  snprintf(checkUsernameUnique, length, CHECK_USERNAME_UNIQUE,
+      username.c_str());
+  result = sqlite3_exec(db, checkUsernameUnique, usernameUniqueCallback,
+      0, &zErrMsg);
+  if (result) {
+    cout << USERNAME_TAKEN << endl;
+    return EMPTY_STRING;
+  }
+  zErrMsg = 0;
 
   cout << PASSWORD_PROMPT << endl;
   cin >> password;

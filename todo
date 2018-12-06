@@ -1,4 +1,4 @@
-make sure people can't use the same username
 make sure people can actually read all of their emails ( even if there are more than 10)
 make sure they can't read other people's emails
 encrypt
+input sanitization
