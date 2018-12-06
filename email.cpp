@@ -186,10 +186,11 @@ string login() {
   string password;
 
   cout << USERNAME_PROMPT;
-  cin >> username;
+  cin.ignore();
+  getline(cin, username);
 
   cout << PASSWORD_PROMPT;
-  cin >> password;
+  getline(cin, password);
 
   // TODO Check that user exists and password is correct
   // If not, return an empty string
@@ -197,9 +198,33 @@ string login() {
   int length = strlen(CHECK_USER) + 2*strlen(username.c_str()) +
     2*strlen(password.c_str()) + 1;
   char* sql = (char*) malloc(length);
-  snprintf(sql, length, CHECK_USER, username.c_str(), password.c_str());
+  //snprintf(sql, length, CHECK_USER, username.c_str(), password.c_str());
   callbackFlag = 0;
-  result = sqlite3_exec(db, sql, authorizationCallback, 0, &zErrMsg);
+  //result = sqlite3_exec(db, sql, authorizationCallback, 0, &zErrMsg);
+  sqlite3_stmt *stmt;
+  const char* pzTest;
+  result = sqlite3_prepare(db, CHECK_USER, strlen(CHECK_USER), &stmt, &pzTest);
+  if(!result) {
+    sqlite3_bind_text(stmt, 1, username.c_str(), username.length(), 0);
+    sqlite3_bind_text(stmt, 2, password.c_str(), password.length(), 0);
+
+    bool done = false;
+    while (!done) {
+      switch(sqlite3_step(stmt)){
+        case SQLITE_ROW:
+          callbackFlag = 1;
+          username = string(reinterpret_cast<const char*>(
+                sqlite3_column_text(stmt, 1)));
+          break;
+        case SQLITE_DONE:
+          done = true;
+          break;
+        default:
+          cout << SOMETHING_WENT_WRONG << endl;
+      }
+    }
+    sqlite3_finalize(stmt);
+  }
   if (callbackFlag) {
     return username;
   }
@@ -217,7 +242,8 @@ string reg() {
   string passwordConfirm;
 
   cout << USERNAME_PROMPT << endl;
-  cin >> username;
+  cin.ignore();
+  getline(cin, username);
 
   result = 0;
   int length = strlen(CHECK_USERNAME_UNIQUE) + username.length() + 1;
@@ -233,10 +259,10 @@ string reg() {
   zErrMsg = 0;
 
   cout << PASSWORD_PROMPT << endl;
-  cin >> password;
+  getline(cin, password);
 
   cout << CONFIRM_PASSWORD_PROMPT << endl;
-  cin >> passwordConfirm;
+  getline(cin, passwordConfirm);
 
   if (password == passwordConfirm) {
     int length = strlen(INSERT_USER) + 2*strlen(username.c_str()) +

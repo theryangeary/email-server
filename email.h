@@ -38,7 +38,7 @@
 #define CHECK_USERNAME_UNIQUE "select name from users where name='%1$s';"
 #define INSERT_USER "insert into users values (NULL, '%1$s', '%2$s'); select id, name from users where name='%1$s' and password='%2$s';"
 #define INSERT_MESSAGE "insert into messages values (NULL, '%1$d', '%2$d', '%3$s', '%4$s');"
-#define CHECK_USER "select id, name from users where name='%1$s' and password='%2$s';"
+#define CHECK_USER "select id, name from users where name = ? and password = ?;"
 #define GET_ALL_USERS "select id, name from users;"
 #define GET_MAIL_USER_ID "select id, subject from messages where receiver='%1$s';"
 #define GET_MAIL "select subject, message from messages where id='%1$s' and receiver='%2$s';"
