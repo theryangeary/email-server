@@ -148,12 +148,13 @@ void send() {
   int choice = showMenu(listMenu, listMenuLength);
 
   cout << SUBJECT_PROMPT << endl;
-  string subject;
-  cin >> subject;
-
+  cin.ignore();
+  string subject = "";
+  getline(cin, subject);
   cout << MESSAGE_PROMPT << endl;
-  string message;
-  cin >> message;
+  string message = "";
+  getline(cin, message);
+  
 
   int length = strlen(INSERT_MESSAGE) + to_string(user.id).length() +
     to_string(choice).length() + message.length() + 1;
