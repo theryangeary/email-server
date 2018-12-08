@@ -36,7 +36,7 @@
 #define CREATE_TABLE_USERS ((char*) "create table if not exists USERS(id integer primary key autoincrement, NAME text, PASSWORD varchar(128));")
 #define CREATE_TABLE_MESSAGES ((char*) "create table if not exists MESSAGES(id integer primary key autoincrement, SENDER integer, RECEIVER integer, SUBJECT text, MESSAGE text);")
 #define CHECK_USERNAME_UNIQUE "select name from users where name='%1$s';"
-#define INSERT_USER "insert into users values (NULL, '%1$s', '%2$s'); select id, name from users where name='%1$s' and password='%2$s';"
+#define INSERT_USER "insert into users (name, password) values (?, ?); select id, name from users where name = ? and password = ?;"
 #define INSERT_MESSAGE "insert into messages values (NULL, '%1$d', '%2$d', '%3$s', '%4$s');"
 #define CHECK_USER "select id, name from users where name = ? and password = ?;"
 #define GET_ALL_USERS "select id, name from users;"

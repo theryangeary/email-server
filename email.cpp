@@ -10,17 +10,12 @@ int listMenuLength = 0;
 int maxMailID = 0;
 sessionUser user;
 
-static int authorizationCallback(id, username) {
+static int authorizationCallback(string id, string username) {
   callbackFlag = 1;
-  if (argc != 2) {
-    return 1;
-  }
-  else {
-    printf(WELCOME_MESSAGE, username ? username : NULL_STRING);
-    user.id = atoi(id);
-    user.name = username;
-    return 0;
-  }
+  printf(WELCOME_MESSAGE, username.c_str());
+  user.id = atoi(id.c_str());
+  user.name = username;
+  return 0;
 }
 
 static int usernameUniqueCallback(void *data, int argc, char** argv,
@@ -61,10 +56,10 @@ int main(){
   };
 
   char* create_table_users = CREATE_TABLE_USERS;
-  result = sqlite3_exec(db, create_table_users, authorizationCallback, 0,
+  result = sqlite3_exec(db, create_table_users, NULL, 0,
       &zErrMsg);
   char* create_table_messages = CREATE_TABLE_MESSAGES;
-  result = sqlite3_exec(db, create_table_messages, authorizationCallback, 0,
+  result = sqlite3_exec(db, create_table_messages, NULL, 0,
       &zErrMsg);
 
   int next = 1;
@@ -181,6 +176,7 @@ string login() {
   int result = 1;
   char* zErrMsg = 0;
 
+  string id;
   string username;
   string password;
 
@@ -233,6 +229,7 @@ string reg() {
   int result;
   char* zErrMsg = 0;
 
+  string id;
   string username;
   string password;
   string passwordConfirm;
@@ -261,11 +258,35 @@ string reg() {
   getline(cin, passwordConfirm);
 
   if (password == passwordConfirm) {
-    int length = strlen(INSERT_USER) + 2*strlen(username.c_str()) +
-      2*strlen(password.c_str()) + 1;
-    char* sql = (char*) malloc(length);
-    snprintf(sql, length, INSERT_USER, username.c_str(), password.c_str());
-    result = sqlite3_exec(db, sql, authorizationCallback, 0, &zErrMsg);
+    callbackFlag = 0;
+    sqlite3_stmt *stmt;
+    const char* pzTest;
+    result = sqlite3_prepare(db, INSERT_USER, strlen(INSERT_USER), &stmt, &pzTest);
+    if(!result) {
+      sqlite3_bind_text(stmt, 1, username.c_str(), username.length(), 0);
+      sqlite3_bind_text(stmt, 2, password.c_str(), password.length(), 0);
+      sqlite3_bind_text(stmt, 3, username.c_str(), username.length(), 0);
+      sqlite3_bind_text(stmt, 4, password.c_str(), password.length(), 0);
+
+      bool done = false;
+      while (!done) {
+        switch(sqlite3_step(stmt)){
+          case SQLITE_ROW:
+            id = string(reinterpret_cast<const char*>(
+                  sqlite3_column_text(stmt, 0)));
+            username = string(reinterpret_cast<const char*>(
+                  sqlite3_column_text(stmt, 1)));
+            result = authorizationCallback(id, username);
+            break;
+          case SQLITE_DONE:
+            done = true;
+            break;
+          default:
+            cout << SOMETHING_WENT_WRONG << endl;
+        }
+      }
+      sqlite3_finalize(stmt);
+    }
     return username;
   }
   else {
