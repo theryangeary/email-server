@@ -18,11 +18,6 @@ static int authorizationCallback(string id, string username) {
   return 0;
 }
 
-static int usernameUniqueCallback(void *data, int argc, char** argv,
-    char** azColName) {
-  return 1;
-}
-
 static int makeMenuCallback(void *data, int argc, char** argv,
     char** azColName) {
   listMenuLength++;
@@ -239,12 +234,28 @@ string reg() {
   getline(cin, username);
 
   result = 0;
-  int length = strlen(CHECK_USERNAME_UNIQUE) + username.length() + 1;
-  char* checkUsernameUnique = (char*) malloc(length*sizeof(char));
-  snprintf(checkUsernameUnique, length, CHECK_USERNAME_UNIQUE,
-      username.c_str());
-  result = sqlite3_exec(db, checkUsernameUnique, usernameUniqueCallback,
-      0, &zErrMsg);
+  callbackFlag = 0;
+  sqlite3_stmt *stmt;
+  const char* pzTest;
+  result = sqlite3_prepare(db, CHECK_USERNAME_UNIQUE, strlen(CHECK_USERNAME_UNIQUE), &stmt, &pzTest);
+  if(!result) {
+    sqlite3_bind_text(stmt, 1, username.c_str(), username.length(), 0);
+
+    bool done = false;
+    while (!done) {
+      switch(sqlite3_step(stmt)){
+        case SQLITE_ROW:
+          result = 1;
+          break;
+        case SQLITE_DONE:
+          done = true;
+          break;
+        default:
+          cout << SOMETHING_WENT_WRONG << endl;
+      }
+    }
+  }
+  sqlite3_finalize(stmt);
   if (result) {
     cout << USERNAME_TAKEN << endl;
     return EMPTY_STRING;
