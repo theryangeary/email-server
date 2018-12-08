@@ -31,13 +31,12 @@ static int makeMenuCallback(void *data, int argc, char** argv,
   return 0;
 }
 
-static int printMailCallback(void *data, int argc, char** argv,
-    char** azColName) {
-  if(argc != 2){
+static int printMailCallback(vector<string> parameters) {
+  if(parameters.size() != 2){
     return 1;
   }
   else{
-    printf(MAIL_FORMAT, argv[0], argv[1]);
+    printf(MAIL_FORMAT, parameters[0].c_str(), parameters[1].c_str());
     return 0;
   }
 }
@@ -114,11 +113,14 @@ void read() {
   listMenu = CHOOSE_MAIL_PROMPT;
   listMenuLength = 1;
 
-  int length = strlen(INSERT_USER) + to_string(user.id).length() + 1;
+  int length = strlen(GET_MAIL_USER_ID) + to_string(user.id).length() + 1;
   char* getMailList = (char*) malloc(length);
   snprintf(getMailList, length, GET_MAIL_USER_ID, to_string(user.id).c_str());
   result = sqlite3_exec(db, getMailList, makeMenuCallback, 0, &zErrMsg);
+  cout << getMailList << endl;
+  cout << "RESult: " << result << endl;
   free(getMailList);
+  cout << listMenu << endl;
 
   int choice = showMenu(listMenu, maxMailID);
 
@@ -126,12 +128,11 @@ void read() {
     return;
   }
 
-  length = strlen(GET_MAIL) + to_string(choice).length() + 1;
-  char* getMail = (char*) malloc(length);
-  snprintf(getMail, length, GET_MAIL, to_string(choice).c_str(),
-      to_string(user.id).c_str());
-  result = sqlite3_exec(db, getMail, printMailCallback, 0, &zErrMsg);
-  free(getMail);
+  vector<string> parameters;
+  parameters.push_back(to_string(choice).c_str());
+  parameters.push_back(to_string(user.id).c_str());
+  result = secureSqlQuery(GET_MAIL, parameters, parameters.size(),
+      printMailCallback);
 }
 
 void send() {
@@ -336,7 +337,8 @@ int secureSqlQuery(char* query, vector<string> parameters,
   if(!result) {
     int i;
     for (i = 0; i < parameters.size(); i++) {
-      sqlite3_bind_text(stmt, i, parameters[i].c_str(),
+      cout << parameters[i] << endl;
+      sqlite3_bind_text(stmt, i+1, parameters[i].c_str(),
           parameters[i].length(), 0);
     }
   }

@@ -1,4 +1,5 @@
 encrypt
 input sanitization
  - change rest
- - test read 
+ - test read
+try hitting enter once before giving a user to send mail to
