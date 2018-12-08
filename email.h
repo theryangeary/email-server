@@ -5,6 +5,8 @@
 #include <iostream>
 #include <sqlite3.h>
 #include <stdio.h>
+#include <vector>
+#include <cstdlib>
 
 #define START_MENU "(0): Register\n(1): Login\n(2): Quit"
 #define START_MENU_OPT_NUM 2
@@ -37,7 +39,7 @@
 #define CREATE_TABLE_MESSAGES ((char*) "create table if not exists MESSAGES(id integer primary key autoincrement, SENDER integer, RECEIVER integer, SUBJECT text, MESSAGE text);")
 #define CHECK_USERNAME_UNIQUE "select name from users where name = ?;"
 #define INSERT_USER "insert into users (name, password) values (?, ?); select id, name from users where name = ? and password = ?;"
-#define INSERT_MESSAGE "insert into messages values (NULL, '%1$d', '%2$d', '%3$s', '%4$s');"
+#define INSERT_MESSAGE ((char*) "insert into messages (sender, receiver, subject, message) values (?, ?, ?, ?);")
 #define CHECK_USER "select id, name from users where name = ? and password = ?;"
 #define GET_ALL_USERS "select id, name from users;"
 #define GET_MAIL_USER_ID "select id, subject from messages where receiver='%1$s';"
@@ -57,6 +59,12 @@ int start();
 void menu();
 void showUsers();
 int showMenu(string options, int max);
+int secureSqlQuery(
+    char* query,
+    vector<string> parameters,
+    int numResultColumns,
+    int (callback(vector<string>))
+    );
 
 typedef struct sessionUser {
   int id;

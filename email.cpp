@@ -10,6 +10,10 @@ int listMenuLength = 0;
 int maxMailID = 0;
 sessionUser user;
 
+int emptyCallback(vector<string> parameters){
+  return 0;
+}
+
 static int authorizationCallback(string id, string username) {
   callbackFlag = 1;
   printf(WELCOME_MESSAGE, username.c_str());
@@ -149,15 +153,13 @@ void send() {
   string message = "";
   getline(cin, message);
 
-
-  int length = strlen(INSERT_MESSAGE) + to_string(user.id).length() +
-    to_string(choice).length() + message.length() + 1;
-  char* messageInsert = (char*) malloc(length);
-  snprintf(messageInsert, length, INSERT_MESSAGE, user.id, choice,
-      subject.c_str(), message.c_str());
-  zErrMsg = 0;
-  result = sqlite3_exec(db, messageInsert, NULL, 0, &zErrMsg);
-  free(messageInsert);
+  vector<string> parameters;
+  parameters.push_back(to_string(user.id).c_str());
+  parameters.push_back(to_string(choice).c_str());
+  parameters.push_back(subject);
+  parameters.push_back(message);
+  result = secureSqlQuery(INSERT_MESSAGE, parameters,
+      parameters.size(), emptyCallback);
 
   if (!result) {
     cout << MESSAGE_SENT;
@@ -237,7 +239,8 @@ string reg() {
   callbackFlag = 0;
   sqlite3_stmt *stmt;
   const char* pzTest;
-  result = sqlite3_prepare(db, CHECK_USERNAME_UNIQUE, strlen(CHECK_USERNAME_UNIQUE), &stmt, &pzTest);
+  result = sqlite3_prepare(db, CHECK_USERNAME_UNIQUE,
+      strlen(CHECK_USERNAME_UNIQUE), &stmt, &pzTest);
   if(!result) {
     sqlite3_bind_text(stmt, 1, username.c_str(), username.length(), 0);
 
@@ -272,7 +275,8 @@ string reg() {
     callbackFlag = 0;
     sqlite3_stmt *stmt;
     const char* pzTest;
-    result = sqlite3_prepare(db, INSERT_USER, strlen(INSERT_USER), &stmt, &pzTest);
+    result = sqlite3_prepare(db, INSERT_USER, strlen(INSERT_USER), &stmt,
+        &pzTest);
     if(!result) {
       sqlite3_bind_text(stmt, 1, username.c_str(), username.length(), 0);
       sqlite3_bind_text(stmt, 2, password.c_str(), password.length(), 0);
@@ -322,3 +326,46 @@ int showMenu(string options, int max) {
     }
   }
 }
+
+int secureSqlQuery(char* query, vector<string> parameters,
+    int numResultColumns, int (callback(vector<string>))) {
+  callbackFlag = 0;
+  sqlite3_stmt *stmt;
+  const char* pzTest;
+  int result = sqlite3_prepare(db, query, strlen(query), &stmt, &pzTest);
+  if(!result) {
+    int i;
+    for (i = 0; i < parameters.size(); i++) {
+      sqlite3_bind_text(stmt, i, parameters[i].c_str(),
+          parameters[i].length(), 0);
+    }
+  }
+
+  bool done = false;
+  while (!done) {
+    switch(sqlite3_step(stmt)){
+      case SQLITE_ROW:
+        if (callback) {
+          vector<string> resultColumns;
+          int i;
+          for (i = 0; i < numResultColumns; i++) {
+            resultColumns.push_back(string(reinterpret_cast<const char*>(
+                    sqlite3_column_text(stmt, i))));
+          }
+          result = callback(resultColumns);
+        }
+        else {
+          result = 0;
+        }
+        break;
+      case SQLITE_DONE:
+        done = true;
+        break;
+      default:
+        cout << SOMETHING_WENT_WRONG << endl;
+    }
+  }
+  sqlite3_finalize(stmt);
+  return result;
+}
+

@@ -1,6 +1,4 @@
 encrypt
 input sanitization
- - sql injection
- - change 1, prevent injection
  - change rest
- - test reg login read send
+ - test read 
