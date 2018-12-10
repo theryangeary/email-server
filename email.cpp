@@ -117,8 +117,6 @@ void read() {
   char* getMailList = (char*) malloc(length);
   snprintf(getMailList, length, GET_MAIL_USER_ID, to_string(user.id).c_str());
   result = sqlite3_exec(db, getMailList, makeMenuCallback, 0, &zErrMsg);
-  cout << getMailList << endl;
-  cout << "RESult: " << result << endl;
   free(getMailList);
   cout << listMenu << endl;
 
@@ -337,7 +335,6 @@ int secureSqlQuery(char* query, vector<string> parameters,
   if(!result) {
     int i;
     for (i = 0; i < parameters.size(); i++) {
-      cout << parameters[i] << endl;
       sqlite3_bind_text(stmt, i+1, parameters[i].c_str(),
           parameters[i].length(), 0);
     }
