@@ -182,6 +182,7 @@ string login() {
 
   cout << PASSWORD_PROMPT;
   getline(cin, password);
+  password = string(hashPassword(password));
 
   // TODO Check that user exists and password is correct
   // If not, return an empty string
@@ -271,6 +272,7 @@ string reg() {
   getline(cin, passwordConfirm);
 
   if (password == passwordConfirm) {
+    password = string(hashPassword(password));
     callbackFlag = 0;
     sqlite3_stmt *stmt;
     const char* pzTest;
@@ -368,3 +370,15 @@ int secureSqlQuery(char* query, vector<string> parameters,
   return result;
 }
 
+char* hashPassword(string password) {
+  int msg_len = password.length();
+  int hash_len = gcry_md_get_algo_dlen( GCRY_MD_SHA1 );
+  unsigned char hash[ hash_len ];
+  char *out = (char *) malloc( sizeof(char) * ((hash_len*2)+1) );
+  gcry_md_hash_buffer( GCRY_MD_SHA1, hash, password.c_str(), msg_len );
+  char* p = out;
+  for (int i = 0; i < hash_len; i++, p+=2) {
+    snprintf(p, 3, "%02x", hash[i]);
+  }
+  return out;
+}

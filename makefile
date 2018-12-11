@@ -1,7 +1,7 @@
 CC = g++
-CFLAGS = -g -std=c++11 
-LFLAGS = -lsqlite3
-OFLAGS = 
+CFLAGS = -g -std=c++11
+LFLAGS = -lsqlite3 -lgcrypt
+OFLAGS =
 SRC = email.cpp
 OBJS = $(SRC:.cpp=.o)
 all: email

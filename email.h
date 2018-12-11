@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <vector>
 #include <cstdlib>
+#include <gcrypt.h>
 
 #define START_MENU "(0): Register\n(1): Login\n(2): Quit"
 #define START_MENU_OPT_NUM 2
@@ -65,6 +66,7 @@ int secureSqlQuery(
     int numResultColumns,
     int (callback(vector<string>))
     );
+char* hashPassword(string password);
 
 typedef struct sessionUser {
   int id;
