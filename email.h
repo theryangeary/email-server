@@ -8,6 +8,7 @@
 #include <vector>
 #include <cstdlib>
 #include <gcrypt.h>
+#include <Python.h>
 
 #define START_MENU "(0): Register\n(1): Login\n(2): Quit"
 #define START_MENU_OPT_NUM 2

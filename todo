@@ -1,2 +1,7 @@
 encrypt
+ - generate key for each user, store in database
+ - write a string constant python command to encrypt, decrypt
+    (https://pypi.org/project/salsa20/)
+ - encrypt before writing to database (in send)
+ - decrypt before print to screen (in read)
 try hitting enter once before giving a user to send mail to

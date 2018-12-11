@@ -41,7 +41,11 @@ static int printMailCallback(vector<string> parameters) {
   }
 }
 
-int main(){
+int main(int argc, char** argv){
+  Py_Initialize();
+  PyRun_SimpleString("from salsa20 import XSalsa20_xor");
+  PyRun_SimpleString("from os import urandom");
+
   int result;
   char* zErrMsg = 0;
 
