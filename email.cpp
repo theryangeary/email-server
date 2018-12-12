@@ -124,7 +124,6 @@ void read() {
   snprintf(getMailList, length, GET_MAIL_USER_ID, to_string(user.id).c_str());
   result = sqlite3_exec(db, getMailList, makeMenuCallback, 0, &zErrMsg);
   free(getMailList);
-  cout << listMenu << endl;
 
   int choice = showMenu(listMenu, maxMailID);
 
