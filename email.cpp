@@ -238,7 +238,6 @@ string reg() {
   cout << USERNAME_PROMPT << endl;
   cin.ignore();
   getline(cin, username);
-  cout << username << endl;
 
   result = 0;
   callbackFlag = 0;
