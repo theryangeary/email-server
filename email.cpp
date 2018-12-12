@@ -36,6 +36,12 @@ static int printMailCallback(vector<string> parameters) {
     return 1;
   }
   else{
+    cin.ignore();
+    cout << KEY_PROMPT << endl;
+    string key = "";
+    getline(cin, key);
+
+    parameters[1] = decrypt(parameters[1], key);
     printf(MAIL_FORMAT, parameters[0].c_str(), parameters[1].c_str());
     return 0;
   }
@@ -151,6 +157,11 @@ void send() {
   cout << MESSAGE_PROMPT << endl;
   string message = "";
   getline(cin, message);
+  cout << KEY_PROMPT << endl;
+  string key = "";
+  getline(cin, key);
+
+  message = encrypt(message, key);
 
   vector<string> parameters;
   parameters.push_back(to_string(user.id).c_str());

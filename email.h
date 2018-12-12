@@ -8,6 +8,7 @@
 #include <vector>
 #include <cstdlib>
 #include <gcrypt.h>
+#include "encrypt.h"
 
 #define START_MENU "(0): Register\n(1): Login\n(2): Quit"
 #define START_MENU_OPT_NUM 2
@@ -20,6 +21,7 @@
 #define NULL_STRING "NULL"
 #define SUBJECT_PROMPT "Enter subject: "
 #define MESSAGE_PROMPT "Enter message: "
+#define KEY_PROMPT "Enter secret key: "
 #define MESSAGE_SENT "Message sent\n"
 #define MESSAGE_RECEIVED "Message from %s:\n\n%s\n"
 #define CHOOSE_USER_PROMPT "Enter user ID to send mail to:"
