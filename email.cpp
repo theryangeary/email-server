@@ -41,11 +41,7 @@ static int printMailCallback(vector<string> parameters) {
   }
 }
 
-int main(int argc, char** argv){
-  Py_Initialize();
-  PyRun_SimpleString("from salsa20 import XSalsa20_xor");
-  PyRun_SimpleString("from os import urandom");
-
+int main(){
   int result;
   char* zErrMsg = 0;
 
@@ -277,15 +273,6 @@ string reg() {
 
   if (password == passwordConfirm) {
     password = string(hashPassword(password));
-
-    string encryptionKey = "";
-    srand(time(NULL));
-    while (encryptionKey.length() < KEY_LENGTH) {
-      int key = rand();
-      encryptionKey += to_string(key);
-    }
-    encryptionKey = encryptionKey.substr(0, KEY_LENGTH);
-
     callbackFlag = 0;
     sqlite3_stmt *stmt;
     const char* pzTest;
@@ -294,10 +281,8 @@ string reg() {
     if(!result) {
       sqlite3_bind_text(stmt, 1, username.c_str(), username.length(), 0);
       sqlite3_bind_text(stmt, 2, password.c_str(), password.length(), 0);
-      sqlite3_bind_text(stmt, 3, encryptionKey.c_str(),
-          encryptionKey.length(), 0);
-      sqlite3_bind_text(stmt, 4, username.c_str(), username.length(), 0);
-      sqlite3_bind_text(stmt, 5, password.c_str(), password.length(), 0);
+      sqlite3_bind_text(stmt, 3, username.c_str(), username.length(), 0);
+      sqlite3_bind_text(stmt, 4, password.c_str(), password.length(), 0);
 
       bool done = false;
       while (!done) {
