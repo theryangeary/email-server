@@ -157,11 +157,11 @@ void send() {
   cout << MESSAGE_PROMPT << endl;
   string message = "";
   getline(cin, message);
-string key = "";
-while(key.length() <= 0) {
-  cout << KEY_PROMPT << endl;
-  getline(cin, key);
-}
+  string key = "";
+  while(key.length() <= 0) {
+    cout << KEY_PROMPT << endl;
+    getline(cin, key);
+  }
 
   message = encrypt(message, key);
 
